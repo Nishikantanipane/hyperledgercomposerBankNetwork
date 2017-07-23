@@ -1,0 +1,89 @@
+/**
+ * Defines a data model for a  Branch Net banking application
+ */
+namespace org.hackerearth.blockchain
+
+/* Abstract class User identification key (primary key)email 
+ This would be extends by all the individual users in the business network
+*/
+
+abstract participant User identified by email {
+  o String email
+  o String firstName
+  o String lastName
+}
+
+/* BranchManager participant to represent branch manager whoes responsibility is to
+   1> Create branchUsers
+   2> Create Accounts in status BEING_ACTIVATED
+   3> Assign Particular account to branchuser with configured intial amount as opening balance
+*/
+participant BranchManager extends User {
+  o Branch branch optional
+}
+
+/* BranchUser participant represents the end user of the application.
+*   They are allowed to transfer money from theire account to other individuals provided if they *have sufficient balance. USer can hold multiple account under same branch
+*/
+participant BranchUser extends User {
+  o Account[] accounts optional
+  --> Branch branch
+}
+
+/* Enum to represent account type 
+*/
+
+enum AccountType {
+  o SAVING
+  o CURRENT
+  o CREDITCARD
+}
+
+/* Enum to represent account state at any point of the time
+*/
+enum AccountState {
+  o ACTIVE
+  o CLOSED
+  o BEING_ACTIVATED
+}
+
+/* Account asset represent type of account a branchUser can hold
+*  1> It would be identified by ain i.e. account identification number
+*/
+asset Account identified by ain {
+  o String ain 
+  --> BranchUser owner optional
+  o AccountType accountType
+  o AccountState accountState
+  o Double balance
+}
+
+/* Branch represents the entity which is not managed with separate login. It would not be assciated * with an blockchain user. As it is not active entity doing something but it an logical entity to group bracnmanager and branchusers
+*/
+asset Branch identified by bin {
+  o String bin
+  --> BranchManager owner
+  o BranchUser[] branchUsers optional
+}
+
+/*
+* This represents the transaction from one branchUser to another 
+* Parameters @amountToBeTransfred : amount to be transfered
+*           @toAccount : account used to credit the transfered money
+*           @fromAccount : account used to debit the transfered money
+*/
+transaction TransferMoney {
+  o Double amountToBeTransfred
+  --> Account toAccount
+  --> Account fromAccount
+}
+
+/* This transaction represents that post branchManager create account and branchuser, he can associate the account with brachuser with openeing balance (user has paid while openeing an account)
+*/
+
+transaction AssignAnAccount {
+  o Double initalBalance
+  --> Account accountToBeOpened
+  --> BranchUser accountOwner
+}
+

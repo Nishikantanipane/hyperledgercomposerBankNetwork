@@ -1,0 +1,29 @@
+query selectAllAccounts {
+  description: "Select all Account in Bank Busniess Network"
+  statement:
+      SELECT org.hackerearth.blockchain.Account
+}
+
+query selectRichAccounts{
+  description: "Select all rich account :) Balance greater than 1000"
+  statement:
+      SELECT org.hackerearth.blockchain.Account
+          WHERE (balance> 1000)
+}
+
+query selectAccountWithLowBalance {
+    description: "Select all accounts which are not maintaining the minimum balance"
+    statement:
+        SELECT org.hackerearth.blockchain.Account
+            WHERE (_$balance < balance)
+                    LIMIT _$limitParam
+}
+
+query selectAllUserInPattern {
+    description: "Select all users order by first name asc and last name desc"
+    statement:
+        SELECT org.hackerearth.blockchain.BranchUser
+                ORDER BY [lastName ASC, firstName DESC]
+                    LIMIT _$limitParam
+                        SKIP _$skipParam
+}

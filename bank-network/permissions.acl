@@ -1,0 +1,34 @@
+/**
+ * Access Control List for the auction network.
+ */
+rule BranchManager {
+    description: "Allow the Branch Manager full access"
+    participant: "org.hackerearth.blockchain.BranchManager"
+    operation: ALL
+    resource: "org.hackerearth.blockchain.*"
+    action: ALLOW
+}
+
+rule BranchUserOwn {
+    description: "Allow the member read access"
+    participant: "org.hackerearth.blockchain.BranchUser"
+    operation: READ, UPDATE
+    resource: "org.hackerearth.blockchain.BranchUser"
+    action: ALLOW
+}
+
+rule BranchUserAccount {
+    description: "Allow the member read access"
+    participant: "org.hackerearth.blockchain.BranchUser"
+    operation: READ, UPDATE
+    resource: "org.hackerearth.blockchain.Account"
+    action: ALLOW
+}
+
+rule Default {
+    description: "Allow all participants access to all resources"
+    participant: "ANY"
+    operation: ALL
+    resource: "org.hackerearth.blockchain.*"
+    action: ALLOW
+}
